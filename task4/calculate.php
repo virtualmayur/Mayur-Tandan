@@ -1,28 +1,44 @@
 <?php
 
-/*
-* Below script is used to get sum of  'n' arguments
-* There is a default variable (array) "$argv" which is used to get all inputs
-* There are some default functions used by me
-* strrpos => It is used to get the position of string from end. 
-* substr => It is used to return a part of a string.
-* ltrim => It is used to remove characters from the left side of a string.
-* explode => It is used to exploding the numbers separated by comma and create a new array.
-* array_sum => It is a php array function which return sum of values.
-*/
+include __DIR__.'/../core/calculator.php';
 
-if (isset($argv[1]) && $argv[1] == 'add') {
-    if (isset($argv[2])) {
-		$delimiter = substr($argv[2], 2, strrpos($argv[2], '\\') - 3);
-        $newString = ltrim($argv[2], '\\' . $delimiter . '\\');
-        $inputNumbers = explode($delimiter, $newString);
-        $numberSum = array_sum($inputNumbers);
-        echo $numberSum;
-    } else {
-        echo 0;
+/**
+ * Class Calculate.
+ *
+ * It extends the core class methods calulate sum of inputs
+ *
+ * @method add ($argv)
+ */
+class Calculate extends Calculator
+{
+    /**
+     * Method add It uses parent class methods to calculate and return sum of array.
+     *
+     * @param array $argv It contains filepath, operation name and input numbers
+     */
+    public function add($argv)
+    {
+        // Use parent class method @getFilteredValues which is used to return maniputed input numbers
+        $number_string = $this->getFilteredValues($argv);
+        
+        // Check & fetch user defined delimiter
+        $delimiter = substr($number_string, 2, strrpos($number_string, '\\') - 3);
+        
+        // Get filtered string
+        $filtered_string = ltrim($number_string, '\\'.$delimiter.'\\');
+        
+        // Use parent class method @getSum which is used to return sum of array
+        $numbers_sum = $this->getSum($filtered_string, $delimiter);
+        
+        echo $numbers_sum;
+    
     }
-} else {
-    echo "Something went wrong. Please check entered operation, Only 'add' operation is allowed.";
+    
 }
+
+$calculate = new Calculate();
+
+echo $calculate->add($argv);
+echo "\n";
 
 ?>

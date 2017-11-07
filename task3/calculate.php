@@ -1,29 +1,46 @@
 <?php
 
-/*
-* Below script is used to get sum of 'n' arguments
-* There is a default variable (array) "$argv" which is used to get all inputs
-* There are some default functions used by me
-* str_replace => It is used to replace substring. If the string contains \n, it replaces \n with comma,
-* explode => It is used to exploding the numbers separated by comma and create a new array.
-* array_sum => It is a php array function which return sum of values.S
-*/
+include __DIR__.'/../core/calculator.php';
 
-if (isset($argv[1]) && $argv[1] == 'add') {
-    if (isset($argv[2])) {
-        if (strpos($argv[2], '\n') !== - 1) {
-            $newString = str_replace('\n', ',', $argv[2]);
+/**
+ * Class Calculate.
+ *
+ * It extends the core class methods calulate sum of inputs
+ *
+ * @method add ($argv)
+ */
+class Calculate extends Calculator
+{
+    /**
+     * Method add It uses parent class methods to calculate and return sum of array.
+     *
+     * @param array $argv It contains filepath, operation name and input numbers
+     */
+    public function add($argv)
+    {
+        
+        // Use parent class method @getFilteredValues which is used to return maniputed input numbers
+        $number_string = $this->getFilteredValues($argv);
+        
+        // Check if string contains any '\n' then replace it with ','
+        if (strpos($number_string, '\n') !== -1) {
+            $filtered_string = str_replace('\n', ',', $number_string);
         } else {
-            $newString = $argv[2];
+            $filtered_string = $number_string;
         }
-        $inputNumbers = explode(',', $newString);
-        $numberSum = array_sum($inputNumbers);
-        echo $numberSum;
-    } else {
-        echo 0;
+        
+        // Use parent class method @getSum which is used to return sum of array
+        $numbers_sum = $this->getSum($filtered_string);
+
+        return $numbers_sum;
     }
-} else {
-    echo "Something went wrong. Please check entered operation, Only 'add' operation is allowed.";
 }
+
+$calculate = new Calculate();
+
+echo $calculate->add($argv);
+echo "\n";
+
+
 
 ?>
